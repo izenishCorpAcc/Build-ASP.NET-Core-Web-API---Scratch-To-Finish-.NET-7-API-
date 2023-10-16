@@ -88,7 +88,7 @@ namespace nzwalks.API.Controllers
             {
                 return NotFound();
             }
-
+            
             var regionsdto = new regiondto
             {
                 id = region.id,
@@ -122,6 +122,37 @@ namespace nzwalks.API.Controllers
             };
             return CreatedAtAction(nameof(GetById),new {id=regionsDTO.id},regionsDTO);
         }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromRoute] Guid id,[FromBody]updateregiondto updater)
+        {
+            //Check if regions exist
+            var result=_dbcontext.Regions.FirstOrDefault(x=>x.id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            result.Code = updater.Code;
+            result.Name = updater.Name;
+            result.RegionImageUrl = updater.RegionImageUrl;
+
+            _dbcontext.SaveChanges();
+
+            //COnvert domain model to DTO
+            var regionsDTO = new regiondto
+            {
+                id = result.id,
+                Code = result.Code,
+                Name = result.Name,
+                RegionImageUrl = result.RegionImageUrl
+            };
+            //return CreatedAtAction(nameof(GetById),new {id=regionsDTO.id},regionsDTO);
+            return Ok(regionsDTO); // Use Ok() to return a 200 (OK) status code for a successful update.
+
+        }
+
 
     }
 }
