@@ -32,10 +32,10 @@ namespace nzwalks.API.Controllers
         //        },
         //    };
 
+        //Get all Records
         [HttpGet]
         public IActionResult Getall()
         {
-           
             //Get Data from the database-Domain Model
             var result=_dbcontext.Regions.ToList();
 
@@ -57,6 +57,7 @@ namespace nzwalks.API.Controllers
 
         }
 
+        //Get by CODEID
         [HttpGet("{code}")]
         public IActionResult GetByCode(string code)
         {
@@ -79,7 +80,7 @@ namespace nzwalks.API.Controllers
         }
 
         //or
-
+        //GET BY ID
         [HttpGet]
         [Route("{id:Guid}")]
         public IActionResult GetById([FromRoute] Guid id) {
@@ -99,6 +100,7 @@ namespace nzwalks.API.Controllers
             return Ok(regionsdto);
          }
 
+        //CREATE A RECORD
         [HttpPost]
         public IActionResult Create([FromBody] addregiondto AR)
         {
@@ -123,6 +125,7 @@ namespace nzwalks.API.Controllers
             return CreatedAtAction(nameof(GetById),new {id=regionsDTO.id},regionsDTO);
         }
 
+      //UPDATE A RECORD BY ID
         [HttpPut]
         [Route("{id:Guid}")]
         public IActionResult Update([FromRoute] Guid id,[FromBody]updateregiondto updater)
@@ -150,6 +153,23 @@ namespace nzwalks.API.Controllers
             };
             //return CreatedAtAction(nameof(GetById),new {id=regionsDTO.id},regionsDTO);
             return Ok(regionsDTO); // Use Ok() to return a 200 (OK) status code for a successful update.
+
+        }
+
+        //DELETE A RECORD BY ID
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var result=_dbcontext.Regions.FirstOrDefault(x=>x.id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            _dbcontext.Regions.Remove(result);
+            _dbcontext.SaveChanges();
+            return Ok();
 
         }
 
