@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using nzwalks.API.Data;
 using nzwalks.API.Models.Domain;
 using nzwalks.API.Models.DTO;
@@ -34,10 +35,10 @@ namespace nzwalks.API.Controllers
 
         //Get all Records
         [HttpGet]
-        public IActionResult Getall()
+        public async Task<IActionResult> Getall()
         {
             //Get Data from the database-Domain Model
-            var result=_dbcontext.Regions.ToList();
+            var result = await _dbcontext.Regions.ToListAsync();
 
             //Map Domain Model to DTO's
             var regionsDTO = new List<regiondto>();
