@@ -60,10 +60,10 @@ namespace nzwalks.API.Controllers
 
         //Get by CODEID
         [HttpGet("{code}")]
-        public IActionResult GetByCode(string code)
+        public async Task<IActionResult> GetByCode(string code)
         {
 
-            var result= _dbcontext.Regions.FirstOrDefault(r=>r.Code==code);
+            var result=await _dbcontext.Regions.FirstOrDefaultAsync(r=>r.Code==code);
             if(result == null)
             {
                 return NotFound();
