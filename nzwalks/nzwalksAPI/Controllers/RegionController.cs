@@ -67,7 +67,8 @@ namespace nzwalks.API.Controllers
         public async Task<IActionResult> GetByCode(string code)
         {
 
-            var result=await _dbcontext.Regions.FirstOrDefaultAsync(r=>r.Code==code);
+            //var result=await _dbcontext.Regions.FirstOrDefaultAsync(r=>r.Code==code);
+            var result=await _iRR.GetByCode(code);
             if(result == null)
             {
                 return NotFound();
@@ -89,7 +90,7 @@ namespace nzwalks.API.Controllers
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
-            var region =await _dbcontext.Regions.FindAsync(id);
+            var region =await _iRR.GetByIDAsync(id);
             if(region == null)
             {
                 return NotFound();
