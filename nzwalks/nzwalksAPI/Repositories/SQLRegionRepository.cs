@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using nzwalks.API.Data;
 using nzwalks.API.Models.Domain;
+using nzwalks.API.Models.DTO;
 
 namespace nzwalks.API.Repositories
 {
@@ -12,6 +13,23 @@ namespace nzwalks.API.Repositories
         {
             _dbcontext = dbcontext;
         }
+
+        public async Task<Region> CreateAsync(Region region)
+        {
+            //var Result= await _dbcontext.Regions.AddAsync(region);
+            //await _dbcontext.SaveChangesAsync();
+            //return Result.Entity;
+            //or
+            await _dbcontext.Regions.AddAsync(region);
+            await _dbcontext.SaveChangesAsync();
+            return region;
+        }
+
+        public Task<Region> DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Region>> GetAllAsync()
         {
            return await _dbcontext.Regions.ToListAsync();
@@ -25,6 +43,22 @@ namespace nzwalks.API.Repositories
         public async Task<Region> GetByIDAsync(Guid id)
         {
             return await _dbcontext.Regions.FindAsync(id);
+        }
+
+        public async Task<Region?> UpdateAsync(Guid id, Region region)
+        {
+            var result = await _dbcontext.Regions.FirstOrDefaultAsync(x => x.id == id);
+            if (result == null)
+            {
+                return null;
+            }
+
+            result.Code=region.Code;
+            result.Name=region.Name;
+            result.RegionImageUrl=region.RegionImageUrl;
+            await _dbcontext.SaveChangesAsync();
+            return result;
+            
         }
     }
 }

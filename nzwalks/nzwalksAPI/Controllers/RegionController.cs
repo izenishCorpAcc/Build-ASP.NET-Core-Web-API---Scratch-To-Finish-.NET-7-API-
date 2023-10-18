@@ -117,8 +117,9 @@ namespace nzwalks.API.Controllers
                 Name = AR.Name,
                 RegionImageUrl = AR.RegionImageUrl
             };
-            await _dbcontext.Regions.AddAsync(regionDomainModel);
-            await _dbcontext.SaveChangesAsync();
+            //await _dbcontext.Regions.AddAsync(regionDomainModel);
+            //await _dbcontext.SaveChangesAsync();
+            _iRR.CreateAsync(regionDomainModel);
 
             //MAP domainModel back to dto
             var regionsDTO = new regiondto
@@ -136,18 +137,26 @@ namespace nzwalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody]updateregiondto updater)
         {
-            //Check if regions exist
-            var result=await _dbcontext.Regions.FirstOrDefaultAsync(x => x.id == id);
-            if (result == null)
+            //DTO to domain model
+            var up2model = new Region
             {
-                return NotFound();
-            }
+                Code = updater.Code,
+                Name = updater.Name,
+                RegionImageUrl = updater.RegionImageUrl
+            };
+            //Check if regions exist
+            var result = await _iRR.UpdateAsync(id, up2model);
+            
+            //if (result == null)
+            //{
+            //    return NotFound();
+            //}
 
-            result.Code = updater.Code;
-            result.Name = updater.Name;
-            result.RegionImageUrl = updater.RegionImageUrl;
+            //result.Code = updater.Code;
+            //result.Name = updater.Name;
+            //result.RegionImageUrl = updater.RegionImageUrl;
 
-            await _dbcontext.SaveChangesAsync();
+            //await _dbcontext.SaveChangesAsync();
 
             //COnvert domain model to DTO
             var regionsDTO = new regiondto
@@ -174,7 +183,7 @@ namespace nzwalks.API.Controllers
             }
 
              _dbcontext.Regions.Remove(result);
-            await _dbcontext.SaveChangesAsync();
+            await _dbcontext.SaveChangesAsync(); 
             return Ok();
 
         }
