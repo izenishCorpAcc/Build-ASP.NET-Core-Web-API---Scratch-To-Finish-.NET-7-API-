@@ -147,10 +147,10 @@ namespace nzwalks.API.Controllers
             //Check if regions exist
             var result = await _iRR.UpdateAsync(id, up2model);
             
-            //if (result == null)
-            //{
-            //    return NotFound();
-            //}
+            if (result == null)
+            {
+                return NotFound();
+            }
 
             //result.Code = updater.Code;
             //result.Name = updater.Name;
@@ -176,15 +176,14 @@ namespace nzwalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var result=await _dbcontext.Regions.FirstOrDefaultAsync(x=>x.id == id);
+            var result=await _iRR.DeleteAsync(id);
             if (result == null)
             {
                 return NotFound();
             }
 
-             _dbcontext.Regions.Remove(result);
-            await _dbcontext.SaveChangesAsync(); 
-            return Ok();
+           
+            return Ok(result);
 
         }
 
