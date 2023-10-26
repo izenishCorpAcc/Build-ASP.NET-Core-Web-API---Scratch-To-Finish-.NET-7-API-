@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using nzwalks.API.Data;
 using nzwalks.API.Models.Domain;
@@ -13,11 +14,13 @@ namespace nzwalks.API.Controllers
     {
         private readonly nzwalksdbcontext _dbcontext;
         private readonly IRegionRepository _iRR;
+        private readonly IMapper _mapper;
 
-        public RegionController(nzwalksdbcontext dbcontext,IRegionRepository IRR)
+        public RegionController(nzwalksdbcontext dbcontext,IRegionRepository IRR,IMapper mapper)
         {
             _dbcontext = dbcontext;
             _iRR = IRR;
+            _mapper = mapper;
         }
         //private readonly List<Region> regions = new List<Region>
         //    {
@@ -45,17 +48,19 @@ namespace nzwalks.API.Controllers
             var result =await _iRR.GetAllAsync();
 
             //Map Domain Model to DTO's
-            var regionsDTO = new List<regiondto>();
-            foreach (var r in result)
-            {
-                regionsDTO.Add(new regiondto()
-                {
-                    id = r.id,
-                    Code = r.Code,
-                    Name = r.Name,
-                    RegionImageUrl = r.RegionImageUrl
-                });   
-            }
+            //var regionsDTO = new List<regiondto>();
+            //foreach (var r in result)
+            //{
+            //    regionsDTO.Add(new regiondto()
+            //    {
+            //        id = r.id,
+            //        Code = r.Code,
+            //        Name = r.Name,
+            //        RegionImageUrl = r.RegionImageUrl
+            //    });   
+            //}
+
+            var regionsDTO=_mapper.Map<List<regiondto>>(result);
 
             //Return DTO's
             return Ok(regionsDTO);
@@ -158,7 +163,7 @@ namespace nzwalks.API.Controllers
 
             //await _dbcontext.SaveChangesAsync();
 
-            //COnvert domain model to DTO
+            //Convert domain model to DTO
             var regionsDTO = new regiondto
             {
                 id = result.id,
@@ -190,3 +195,4 @@ namespace nzwalks.API.Controllers
 
     }
 }
+
